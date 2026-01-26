@@ -2,6 +2,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { LayoutDashboard, Store, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import logoMiPiace from '@/assets/logo-mipiace.png';
 
 export function Header() {
   const location = useLocation();
@@ -16,10 +17,7 @@ export function Header() {
       <div className="container flex h-16 items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2">
-          <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
-            <span className="text-primary-foreground font-bold text-sm">A</span>
-          </div>
-          <span className="font-semibold text-lg">Açaí Manager</span>
+          <img src={logoMiPiace} alt="Mi Piace Gelato" className="h-10 object-contain" />
         </Link>
 
         {/* Navigation */}

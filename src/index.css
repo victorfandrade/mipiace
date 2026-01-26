@@ -10,41 +10,41 @@
 @layer base {
   :root {
     /* Background - Light, clean */
-    --background: 210 20% 98%;
-    --foreground: 220 20% 10%;
+    --background: 60 10% 98%;
+    --foreground: 84 25% 15%;
 
     /* Cards - Pure white with subtle depth */
     --card: 0 0% 100%;
-    --card-foreground: 220 20% 10%;
+    --card-foreground: 84 25% 15%;
 
     /* Popover */
     --popover: 0 0% 100%;
-    --popover-foreground: 220 20% 10%;
+    --popover-foreground: 84 25% 15%;
 
-    /* Primary - Dark graphite */
-    --primary: 220 20% 10%;
+    /* Primary - Mi Piace Olive Green */
+    --primary: 84 25% 32%;
     --primary-foreground: 0 0% 100%;
 
-    /* Secondary - Neutral gray */
-    --secondary: 220 14% 96%;
-    --secondary-foreground: 220 20% 10%;
+    /* Secondary - Warm neutral */
+    --secondary: 60 10% 95%;
+    --secondary-foreground: 84 25% 15%;
 
-    /* Muted - Soft gray */
-    --muted: 220 14% 96%;
-    --muted-foreground: 220 10% 46%;
+    /* Muted - Soft warm gray */
+    --muted: 60 10% 95%;
+    --muted-foreground: 84 15% 45%;
 
-    /* Accent */
-    --accent: 220 14% 96%;
-    --accent-foreground: 220 20% 10%;
+    /* Accent - Light olive */
+    --accent: 84 15% 92%;
+    --accent-foreground: 84 25% 15%;
 
     /* Destructive */
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    /* Border - Very subtle */
-    --border: 220 14% 91%;
-    --input: 220 14% 91%;
-    --ring: 220 20% 10%;
+    /* Border - Warm subtle */
+    --border: 60 10% 90%;
+    --input: 60 10% 90%;
+    --ring: 84 25% 32%;
 
     /* Radius - Rounded but not too much */
     --radius: 0.75rem;
@@ -56,8 +56,8 @@
     --status-production-bg: 45 93% 95%;
     --status-ready: 142 71% 45%;
     --status-ready-bg: 142 71% 95%;
-    --status-delivered: 220 9% 46%;
-    --status-delivered-bg: 220 9% 95%;
+    --status-delivered: 84 20% 50%;
+    --status-delivered-bg: 84 20% 95%;
 
     /* Payment Status */
     --paid: 142 71% 45%;
@@ -65,20 +65,20 @@
 
     /* Sidebar */
     --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 220 20% 10%;
-    --sidebar-primary: 220 20% 10%;
+    --sidebar-foreground: 84 25% 15%;
+    --sidebar-primary: 84 25% 32%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 14% 96%;
-    --sidebar-accent-foreground: 220 20% 10%;
-    --sidebar-border: 220 14% 91%;
-    --sidebar-ring: 220 20% 10%;
+    --sidebar-accent: 84 15% 92%;
+    --sidebar-accent-foreground: 84 25% 15%;
+    --sidebar-border: 60 10% 90%;
+    --sidebar-ring: 84 25% 32%;
 
-    /* Chart Colors */
-    --chart-1: 217 91% 60%;
-    --chart-2: 142 71% 45%;
-    --chart-3: 45 93% 47%;
-    --chart-4: 262 83% 58%;
-    --chart-5: 0 84% 60%;
+    /* Chart Colors - Brand palette */
+    --chart-1: 84 35% 35%;
+    --chart-2: 84 25% 45%;
+    --chart-3: 142 71% 45%;
+    --chart-4: 45 93% 47%;
+    --chart-5: 84 15% 60%;
   }
 
   .dark {
