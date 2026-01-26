@@ -49,19 +49,19 @@
     /* Radius - Rounded but not too much */
     --radius: 0.75rem;
 
-    /* Status Colors - Order States */
-    --status-new: 217 91% 60%;
-    --status-new-bg: 217 91% 97%;
-    --status-production: 45 93% 47%;
-    --status-production-bg: 45 93% 95%;
-    --status-ready: 142 71% 45%;
-    --status-ready-bg: 142 71% 95%;
-    --status-delivered: 84 20% 50%;
-    --status-delivered-bg: 84 20% 95%;
+    /* Status Colors - Order States (Earthy Tones) */
+    --status-new: 16 65% 50%;
+    --status-new-bg: 16 65% 95%;
+    --status-production: 35 45% 45%;
+    --status-production-bg: 35 45% 93%;
+    --status-ready: 84 25% 38%;
+    --status-ready-bg: 84 25% 92%;
+    --status-delivered: 30 15% 55%;
+    --status-delivered-bg: 30 15% 93%;
 
-    /* Payment Status */
-    --paid: 142 71% 45%;
-    --pending: 45 93% 47%;
+    /* Payment Status (Earthy) */
+    --paid: 84 25% 38%;
+    --pending: 35 45% 45%;
 
     /* Sidebar */
     --sidebar-background: 0 0% 100%;
@@ -73,12 +73,12 @@
     --sidebar-border: 60 10% 90%;
     --sidebar-ring: 84 25% 32%;
 
-    /* Chart Colors - Brand palette */
-    --chart-1: 84 35% 35%;
-    --chart-2: 84 25% 45%;
-    --chart-3: 142 71% 45%;
-    --chart-4: 45 93% 47%;
-    --chart-5: 84 15% 60%;
+    /* Chart Colors - Earthy palette */
+    --chart-1: 84 30% 32%;
+    --chart-2: 35 40% 42%;
+    --chart-3: 16 55% 48%;
+    --chart-4: 30 25% 50%;
+    --chart-5: 84 20% 55%;
   }
 
   .dark {
