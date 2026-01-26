@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
-import { CalendarIcon, Download } from 'lucide-react';
+import { CalendarIcon } from 'lucide-react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
@@ -81,11 +81,6 @@ export function DateFilter({ onPeriodChange, onExport }: DateFilterProps) {
         </PopoverContent>
       </Popover>
 
-      {/* Export Button */}
-      <Button variant="outline" size="sm" className="gap-2 ml-auto" onClick={onExport}>
-        <Download className="h-4 w-4" />
-        Exportar CSV
-      </Button>
     </div>
   );
 }

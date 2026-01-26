@@ -21,9 +21,13 @@
     --popover: 0 0% 100%;
     --popover-foreground: 220 20% 10%;
 
-    /* Primary - Dark graphite */
-    --primary: 220 20% 10%;
+    /* Primary - Brand olive green */
+    --primary: 75 18% 35%;
     --primary-foreground: 0 0% 100%;
+
+    /* Brand accent */
+    --brand: 75 18% 35%;
+    --brand-light: 75 18% 95%;
 
     /* Secondary - Neutral gray */
     --secondary: 220 14% 96%;
@@ -88,8 +92,10 @@
     --card-foreground: 210 20% 98%;
     --popover: 220 20% 14%;
     --popover-foreground: 210 20% 98%;
-    --primary: 0 0% 100%;
-    --primary-foreground: 220 20% 10%;
+    --primary: 75 25% 70%;
+    --primary-foreground: 75 18% 15%;
+    --brand: 75 25% 70%;
+    --brand-light: 75 18% 20%;
     --secondary: 220 14% 20%;
     --secondary-foreground: 210 20% 98%;
     --muted: 220 14% 20%;
