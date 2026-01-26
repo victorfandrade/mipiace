@@ -74,9 +74,6 @@ export default {
           paid: "hsl(var(--paid))",
           pending: "hsl(var(--pending))",
         },
-        brand: {
-          DEFAULT: "hsl(var(--brand))",
-          light: "hsl(var(--brand-light))",
         chart: {
           "1": "hsl(var(--chart-1))",
           "2": "hsl(var(--chart-2))",

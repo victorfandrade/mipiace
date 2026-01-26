@@ -38,7 +38,7 @@ const Admin = () => {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h1 className="text-2xl font-bold tracking-tight">Dashboard</h1>
-            <p className="text-muted-foreground">Acompanhe o desempenho da sua gelateria</p>
+            <p className="text-muted-foreground">Acompanhe o desempenho do seu negócio</p>
           </div>
           <DateFilter onExport={handleExport} />
         </div>
