@@ -1,6 +1,18 @@
-import { Order, SalesData, ProductSalesData, FlavorSalesData, HourlySalesData } from '@/types/order';
+/**
+ * Dados de exemplo (mock) para desenvolvimento
+ * Em produção, esses dados viriam de uma API/banco de dados
+ */
 
-// Mock orders for production kanban
+import { 
+  Order, 
+  SalesData, 
+  ProductSalesData, 
+  HourlySalesData 
+} from '@/types/order';
+
+// ========================================
+// Pedidos de exemplo para o Kanban
+// ========================================
 export const mockOrders: Order[] = [
   {
     id: '1',
@@ -97,7 +109,10 @@ export const mockOrders: Order[] = [
   },
 ];
 
-// Mock sales data for charts
+// ========================================
+// Dados para gráficos do Dashboard
+// ========================================
+
 export const mockSalesData: SalesData[] = [
   { date: '2024-01-20', total: 2450.00, orders: 52 },
   { date: '2024-01-21', total: 2880.00, orders: 61 },
@@ -112,17 +127,6 @@ export const mockProductSales: ProductSalesData[] = [
   { name: 'Pote 500ml', sales: 245, revenue: 12250 },
   { name: 'Pote 240ml', sales: 189, revenue: 5670 },
   { name: 'Cascão Artesanal', sales: 312, revenue: 936 },
-];
-
-export const mockFlavorSales: FlavorSalesData[] = [
-  { name: 'Pistache', sales: 178 },
-  { name: 'Ninho com Nutella', sales: 156 },
-  { name: 'Romeu e Julieta', sales: 134 },
-  { name: 'Doce de Leite', sales: 122 },
-  { name: 'Morango Zero Lactose', sales: 98 },
-  { name: 'Limão Siciliano', sales: 87 },
-  { name: 'Pavlova', sales: 76 },
-  { name: 'Café Robusta', sales: 65 },
 ];
 
 export const mockHourlySales: HourlySalesData[] = [
@@ -140,8 +144,15 @@ export const mockHourlySales: HourlySalesData[] = [
   { hour: '21h', orders: 15, revenue: 540 },
 ];
 
-// KPI calculations
-export const calculateKPIs = () => {
+// ========================================
+// Funções utilitárias para KPIs
+// ========================================
+
+/**
+ * Calcula os indicadores principais do dashboard
+ * Usa os dados mock de vendas para gerar métricas
+ */
+export function calculateKPIs() {
   const today = mockSalesData[mockSalesData.length - 1];
   const yesterday = mockSalesData[mockSalesData.length - 2];
   
@@ -149,15 +160,14 @@ export const calculateKPIs = () => {
   const weekOrders = mockSalesData.reduce((acc, day) => acc + day.orders, 0);
   
   const ticketMedio = weekTotal / weekOrders;
-  
   const changePercent = ((today.total - yesterday.total) / yesterday.total) * 100;
   
   return {
     totalHoje: today.total,
     totalSemana: weekTotal,
-    ticketMedio: ticketMedio,
+    ticketMedio,
     pedidosHoje: today.orders,
     pedidosSemana: weekOrders,
-    changePercent: changePercent,
+    changePercent,
   };
-};
+}

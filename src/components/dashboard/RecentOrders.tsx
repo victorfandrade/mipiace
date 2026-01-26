@@ -1,3 +1,8 @@
+/**
+ * Tabela de pedidos recentes
+ * Exibe uma lista compacta dos últimos pedidos
+ */
+
 import { Order } from '@/types/order';
 import { StatusBadge, PaymentBadge } from '@/components/ui/status-badge';
 import {

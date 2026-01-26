@@ -1,3 +1,7 @@
+/**
+ * Gráfico de linha mostrando vendas da semana
+ */
+
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { SalesData } from '@/types/order';
 
@@ -6,6 +10,7 @@ interface SalesChartProps {
 }
 
 export function SalesChart({ data }: SalesChartProps) {
+  // Formata as datas para exibição (ex: "seg 20")
   const formattedData = data.map(item => ({
     ...item,
     date: new Date(item.date).toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit' }),

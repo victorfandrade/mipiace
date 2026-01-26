@@ -1,5 +1,10 @@
+/**
+ * Card de pedido exibido no Kanban
+ * Mostra detalhes do pedido e botão para avançar status
+ */
+
 import { Order, OrderStatus } from '@/types/order';
-import { StatusBadge, PaymentBadge } from '@/components/ui/status-badge';
+import { PaymentBadge } from '@/components/ui/status-badge';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Clock, ChefHat, Check, Truck } from 'lucide-react';
@@ -9,52 +14,41 @@ interface OrderCardProps {
   onStatusChange: (orderId: string, newStatus: OrderStatus) => void;
 }
 
-const formatTime = (date: Date) => {
+// Formata hora no padrão brasileiro (ex: 14:30)
+function formatTime(date: Date): string {
   return date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-};
+}
 
-const getMinutesAgo = (date: Date) => {
+// Calcula quantos minutos se passaram desde a criação
+function getMinutesAgo(date: Date): number {
   const diff = Date.now() - date.getTime();
   return Math.floor(diff / 60000);
+}
+
+// Configuração dos botões de ação por status
+const ACTION_CONFIG: Record<OrderStatus, { label: string; icon: React.ReactNode; className: string } | null> = {
+  novo: null, // Pedido novo não tem ação própria, só pode ir para produção
+  producao: { label: 'Iniciar', icon: <ChefHat className="h-4 w-4" />, className: 'action-btn-warning' },
+  pronto: { label: 'Concluir', icon: <Check className="h-4 w-4" />, className: 'action-btn-success' },
+  entregue: { label: 'Entregar', icon: <Truck className="h-4 w-4" />, className: 'action-btn-secondary' },
 };
+
+// Qual é o próximo status na sequência do fluxo
+function getNextStatus(currentStatus: OrderStatus): OrderStatus | null {
+  const flow: Record<OrderStatus, OrderStatus | null> = {
+    novo: 'producao',
+    producao: 'pronto',
+    pronto: 'entregue',
+    entregue: null,
+  };
+  return flow[currentStatus];
+}
 
 export function OrderCard({ order, onStatusChange }: OrderCardProps) {
   const minutesAgo = getMinutesAgo(order.createdAt);
   const isUrgent = minutesAgo > 15 && order.status !== 'entregue';
-  
-  const getNextStatus = (): OrderStatus | null => {
-    switch (order.status) {
-      case 'novo': return 'producao';
-      case 'producao': return 'pronto';
-      case 'pronto': return 'entregue';
-      default: return null;
-    }
-  };
-
-  const getActionButton = () => {
-    const nextStatus = getNextStatus();
-    if (!nextStatus) return null;
-
-    const buttonConfig: Record<OrderStatus, { label: string; icon: React.ReactNode; className: string }> = {
-      producao: { label: 'Iniciar', icon: <ChefHat className="h-4 w-4" />, className: 'action-btn-warning' },
-      pronto: { label: 'Concluir', icon: <Check className="h-4 w-4" />, className: 'action-btn-success' },
-      entregue: { label: 'Entregar', icon: <Truck className="h-4 w-4" />, className: 'action-btn-secondary' },
-      novo: { label: '', icon: null, className: '' },
-    };
-
-    const config = buttonConfig[nextStatus];
-    
-    return (
-      <Button
-        onClick={() => onStatusChange(order.id, nextStatus)}
-        className={cn('w-full gap-2', config.className)}
-        size="sm"
-      >
-        {config.icon}
-        {config.label}
-      </Button>
-    );
-  };
+  const nextStatus = getNextStatus(order.status);
+  const actionConfig = nextStatus ? ACTION_CONFIG[nextStatus] : null;
 
   return (
     <div
@@ -64,7 +58,7 @@ export function OrderCard({ order, onStatusChange }: OrderCardProps) {
         isUrgent && 'border-destructive/50'
       )}
     >
-      {/* Header */}
+      {/* Cabeçalho: número do pedido e tempo */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <span className="text-lg font-semibold">#{order.orderNumber}</span>
@@ -77,12 +71,12 @@ export function OrderCard({ order, onStatusChange }: OrderCardProps) {
         </div>
       </div>
 
-      {/* Customer */}
+      {/* Nome do cliente */}
       {order.customerName && (
         <p className="text-sm text-muted-foreground mb-3">{order.customerName}</p>
       )}
 
-      {/* Items */}
+      {/* Lista de itens */}
       <div className="space-y-2 mb-4">
         {order.items.map((item) => (
           <div key={item.id} className="text-sm">
@@ -111,15 +105,20 @@ export function OrderCard({ order, onStatusChange }: OrderCardProps) {
       {/* Total */}
       <div className="flex items-center justify-between py-3 border-t border-border">
         <span className="font-medium">Total</span>
-        <span className="text-lg font-semibold">
-          R$ {order.total.toFixed(2)}
-        </span>
+        <span className="text-lg font-semibold">R$ {order.total.toFixed(2)}</span>
       </div>
 
-      {/* Action Button */}
-      {getActionButton() && (
+      {/* Botão de ação (se houver próximo status) */}
+      {nextStatus && actionConfig && (
         <div className="mt-3">
-          {getActionButton()}
+          <Button
+            onClick={() => onStatusChange(order.id, nextStatus)}
+            className={cn('w-full gap-2', actionConfig.className)}
+            size="sm"
+          >
+            {actionConfig.icon}
+            {actionConfig.label}
+          </Button>
         </div>
       )}
     </div>

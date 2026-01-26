@@ -1,3 +1,7 @@
+/**
+ * Gráfico de barras horizontais mostrando produtos mais vendidos
+ */
+
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { ProductSalesData } from '@/types/order';
 

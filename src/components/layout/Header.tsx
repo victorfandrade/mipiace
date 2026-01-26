@@ -1,16 +1,22 @@
+/**
+ * Header principal da aplicação
+ * Contém logo, navegação entre páginas e botão de logout
+ */
+
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { LayoutDashboard, Store, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import logoMiPiace from '@/assets/logo-mipiace.png';
 
+// Itens de navegação - adicionar novas rotas aqui
+const NAV_ITEMS = [
+  { path: '/admin', label: 'Dashboard', icon: LayoutDashboard },
+  { path: '/loja', label: 'Produção', icon: Store },
+];
+
 export function Header() {
   const location = useLocation();
-  
-  const navItems = [
-    { path: '/admin', label: 'Dashboard', icon: LayoutDashboard },
-    { path: '/loja', label: 'Produção', icon: Store },
-  ];
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-card/80 backdrop-blur-sm">
@@ -20,9 +26,9 @@ export function Header() {
           <img src={logoMiPiace} alt="Mi Piace Gelato" className="h-10 object-contain" />
         </Link>
 
-        {/* Navigation */}
+        {/* Navegação */}
         <nav className="flex items-center gap-1">
-          {navItems.map((item) => {
+          {NAV_ITEMS.map((item) => {
             const Icon = item.icon;
             const isActive = location.pathname === item.path;
             
@@ -44,7 +50,7 @@ export function Header() {
           })}
         </nav>
 
-        {/* User Menu */}
+        {/* Logout */}
         <Button variant="ghost" size="icon" className="text-muted-foreground">
           <LogOut className="h-4 w-4" />
         </Button>
