@@ -1,20 +1,26 @@
+/**
+ * Badges de status para pedidos e pagamentos
+ * Componentes visuais que indicam o estado atual
+ */
+
 import { OrderStatus, PaymentStatus } from '@/types/order';
 import { cn } from '@/lib/utils';
 
-interface StatusBadgeProps {
-  status: OrderStatus;
-  className?: string;
-}
-
-const statusConfig: Record<OrderStatus, { label: string; className: string }> = {
+// Configuração visual de cada status de pedido
+const STATUS_CONFIG: Record<OrderStatus, { label: string; className: string }> = {
   novo: { label: 'Novo', className: 'status-new' },
   producao: { label: 'Produção', className: 'status-production' },
   pronto: { label: 'Pronto', className: 'status-ready' },
   entregue: { label: 'Entregue', className: 'status-delivered' },
 };
 
+interface StatusBadgeProps {
+  status: OrderStatus;
+  className?: string;
+}
+
 export function StatusBadge({ status, className }: StatusBadgeProps) {
-  const config = statusConfig[status];
+  const config = STATUS_CONFIG[status];
   
   return (
     <span

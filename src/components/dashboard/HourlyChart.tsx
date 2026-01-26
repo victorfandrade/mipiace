@@ -1,3 +1,7 @@
+/**
+ * Gráfico de área mostrando vendas por horário do dia
+ */
+
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { HourlySalesData } from '@/types/order';
 

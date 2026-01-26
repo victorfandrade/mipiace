@@ -1,3 +1,8 @@
+/**
+ * Filtro de período para o dashboard
+ * Permite selecionar hoje, semana, mês ou data personalizada
+ */
+
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
@@ -13,6 +18,13 @@ interface DateFilterProps {
   onPeriodChange?: (period: Period) => void;
 }
 
+// Opções de período rápido
+const PERIOD_OPTIONS: { value: Period; label: string }[] = [
+  { value: 'today', label: 'Hoje' },
+  { value: 'week', label: 'Semana' },
+  { value: 'month', label: 'Mês' },
+];
+
 export function DateFilter({ onPeriodChange }: DateFilterProps) {
   const [period, setPeriod] = useState<Period>('week');
   const [date, setDate] = useState<Date | undefined>(new Date());
@@ -22,44 +34,35 @@ export function DateFilter({ onPeriodChange }: DateFilterProps) {
     onPeriodChange?.(newPeriod);
   };
 
-  const periods: { value: Period; label: string }[] = [
-    { value: 'today', label: 'Hoje' },
-    { value: 'week', label: 'Semana' },
-    { value: 'month', label: 'Mês' },
-  ];
-
   return (
     <div className="flex flex-wrap items-center gap-2">
-      {/* Period Buttons */}
+      {/* Botões de período rápido */}
       <div className="flex items-center bg-secondary rounded-lg p-1">
-        {periods.map((p) => (
+        {PERIOD_OPTIONS.map((option) => (
           <Button
-            key={p.value}
+            key={option.value}
             variant="ghost"
             size="sm"
-            onClick={() => handlePeriodChange(p.value)}
+            onClick={() => handlePeriodChange(option.value)}
             className={cn(
               'rounded-md px-3 py-1.5 text-sm font-medium transition-colors',
-              period === p.value
+              period === option.value
                 ? 'bg-card text-foreground shadow-sm'
                 : 'text-muted-foreground hover:text-foreground'
             )}
           >
-            {p.label}
+            {option.label}
           </Button>
         ))}
       </div>
 
-      {/* Custom Date Picker */}
+      {/* Seletor de data personalizada */}
       <Popover>
         <PopoverTrigger asChild>
           <Button
             variant="outline"
             size="sm"
-            className={cn(
-              'gap-2',
-              period === 'custom' && 'bg-secondary'
-            )}
+            className={cn('gap-2', period === 'custom' && 'bg-secondary')}
           >
             <CalendarIcon className="h-4 w-4" />
             {period === 'custom' && date
@@ -79,7 +82,6 @@ export function DateFilter({ onPeriodChange }: DateFilterProps) {
           />
         </PopoverContent>
       </Popover>
-
     </div>
   );
 }

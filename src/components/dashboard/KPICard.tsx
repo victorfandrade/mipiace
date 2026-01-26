@@ -1,15 +1,20 @@
+/**
+ * Card de KPI (Indicador Chave de Performance)
+ * Exibe uma métrica importante com variação percentual
+ */
+
 import { cn } from '@/lib/utils';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 
 interface KPICardProps {
   title: string;
   value: string | number;
-  change?: number;
-  changeLabel?: string;
+  change?: number;           // Variação percentual (positivo ou negativo)
+  changeLabel?: string;      // Ex: "vs ontem", "vs semana passada"
   icon?: React.ReactNode;
   className?: string;
-  valuePrefix?: string;
-  valueSuffix?: string;
+  valuePrefix?: string;      // Ex: "R$ "
+  valueSuffix?: string;      // Ex: "%"
 }
 
 export function KPICard({
@@ -43,6 +48,7 @@ export function KPICard({
         )}
       </div>
       
+      {/* Indicador de variação */}
       {change !== undefined && (
         <div className="mt-4 flex items-center gap-2">
           <div

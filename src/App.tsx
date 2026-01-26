@@ -1,3 +1,8 @@
+/**
+ * App principal
+ * Configura providers globais e rotas da aplicação
+ */
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -13,14 +18,16 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
+      {/* Sistemas de notificação */}
       <Toaster />
       <Sonner />
+      
+      {/* Rotas da aplicação */}
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/loja" element={<Loja />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
