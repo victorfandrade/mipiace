@@ -1,9 +1,11 @@
 /**
  * Página de Dashboard (Admin)
  * Exibe KPIs, gráficos e pedidos recentes
+ * Protegida por senha simples
  */
 
 import { Header } from '@/components/layout/Header';
+import { PasswordGate } from '@/components/auth/PasswordGate';
 import { KPICard } from '@/components/dashboard/KPICard';
 import { SalesChart } from '@/components/dashboard/SalesChart';
 import { ProductsChart } from '@/components/dashboard/ProductsChart';
@@ -11,7 +13,7 @@ import { HourlyChart } from '@/components/dashboard/HourlyChart';
 import { DateFilter } from '@/components/dashboard/DateFilter';
 import { RecentOrders } from '@/components/dashboard/RecentOrders';
 import { 
-  mockSalesData, 
+  mockSalesData,
   mockProductSales, 
   mockHourlySales, 
   mockOrders,
@@ -31,8 +33,9 @@ const Admin = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
+    <PasswordGate>
+      <div className="min-h-screen bg-background">
+        <Header />
       
       <main className="container py-6 space-y-6">
         {/* Cabeçalho da página */}
@@ -116,7 +119,8 @@ const Admin = () => {
         {/* Tabela de Pedidos Recentes */}
         <RecentOrders orders={mockOrders} />
       </main>
-    </div>
+      </div>
+    </PasswordGate>
   );
 };
 
