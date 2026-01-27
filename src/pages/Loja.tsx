@@ -1,6 +1,7 @@
 /**
  * Página de Produção (Loja)
  * Quadro Kanban para gerenciar o fluxo de pedidos
+ * Otimizado para mobile com scroll horizontal
  */
 
 import { useState, useCallback } from 'react';
@@ -51,29 +52,32 @@ const Loja = () => {
     <div className="min-h-screen bg-background">
       <Header />
       
-      <main className="container py-6">
+      <main className="py-4 sm:py-6">
         {/* Cabeçalho da página */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="container flex items-center justify-between mb-4 sm:mb-6">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight">Produção</h1>
-            <p className="text-muted-foreground">Gerencie o fluxo de pedidos</p>
+            <h1 className="text-xl sm:text-2xl font-bold tracking-tight">Produção</h1>
+            <p className="text-sm text-muted-foreground">Gerencie o fluxo de pedidos</p>
           </div>
           <Button variant="outline" size="sm" className="gap-2">
             <RefreshCw className="h-4 w-4" />
-            Atualizar
+            <span className="hidden sm:inline">Atualizar</span>
           </Button>
         </div>
 
-        {/* Quadro Kanban */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
-          {KANBAN_STATUSES.map(status => (
-            <KanbanColumn
-              key={status}
-              status={status}
-              orders={getOrdersByStatus(status)}
-              onStatusChange={handleStatusChange}
-            />
-          ))}
+        {/* Quadro Kanban - Scroll horizontal no mobile */}
+        <div className="overflow-x-auto scrollbar-thin pb-4">
+          <div className="flex gap-4 px-4 sm:px-6 lg:px-8 min-w-max xl:min-w-0 xl:grid xl:grid-cols-4">
+            {KANBAN_STATUSES.map(status => (
+              <div key={status} className="w-72 sm:w-80 xl:w-auto flex-shrink-0 xl:flex-shrink">
+                <KanbanColumn
+                  status={status}
+                  orders={getOrdersByStatus(status)}
+                  onStatusChange={handleStatusChange}
+                />
+              </div>
+            ))}
+          </div>
         </div>
       </main>
     </div>

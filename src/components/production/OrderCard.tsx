@@ -1,6 +1,7 @@
 /**
  * Card de pedido exibido no Kanban
  * Mostra detalhes do pedido e botão para avançar status
+ * Layout compacto otimizado para mobile
  */
 
 import { Order, OrderStatus } from '@/types/order';
@@ -27,7 +28,7 @@ function getMinutesAgo(date: Date): number {
 
 // Configuração dos botões de ação por status
 const ACTION_CONFIG: Record<OrderStatus, { label: string; icon: React.ReactNode; className: string } | null> = {
-  novo: null, // Pedido novo não tem ação própria, só pode ir para produção
+  novo: null,
   producao: { label: 'Iniciar', icon: <ChefHat className="h-4 w-4" />, className: 'action-btn-warning' },
   pronto: { label: 'Concluir', icon: <Check className="h-4 w-4" />, className: 'action-btn-success' },
   entregue: { label: 'Entregar', icon: <Truck className="h-4 w-4" />, className: 'action-btn-secondary' },
@@ -53,48 +54,48 @@ export function OrderCard({ order, onStatusChange }: OrderCardProps) {
   return (
     <div
       className={cn(
-        'order-card',
+        'order-card p-3 sm:p-4',
         order.status === 'novo' && 'animate-pulse-subtle border-status-new/30',
         isUrgent && 'border-destructive/50'
       )}
     >
       {/* Cabeçalho: número do pedido e tempo */}
-      <div className="flex items-center justify-between mb-3">
+      <div className="flex items-center justify-between mb-2 sm:mb-3">
         <div className="flex items-center gap-2">
-          <span className="text-lg font-semibold">#{order.orderNumber}</span>
+          <span className="text-base sm:text-lg font-semibold">#{order.orderNumber}</span>
           <PaymentBadge status={order.paymentStatus} />
         </div>
-        <div className="flex items-center gap-1 text-sm text-muted-foreground">
-          <Clock className="h-3.5 w-3.5" />
+        <div className="flex items-center gap-1 text-xs sm:text-sm text-muted-foreground">
+          <Clock className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
           <span>{formatTime(order.createdAt)}</span>
-          <span className="text-xs">({minutesAgo}min)</span>
+          <span className="text-xs">({minutesAgo}m)</span>
         </div>
       </div>
 
       {/* Nome do cliente */}
       {order.customerName && (
-        <p className="text-sm text-muted-foreground mb-3">{order.customerName}</p>
+        <p className="text-xs sm:text-sm text-muted-foreground mb-2 sm:mb-3">{order.customerName}</p>
       )}
 
-      {/* Lista de itens */}
-      <div className="space-y-2 mb-4">
+      {/* Lista de itens - compacta no mobile */}
+      <div className="space-y-1.5 sm:space-y-2 mb-3 sm:mb-4">
         {order.items.map((item) => (
-          <div key={item.id} className="text-sm">
-            <div className="flex items-start justify-between">
-              <div>
+          <div key={item.id} className="text-xs sm:text-sm">
+            <div className="flex items-start justify-between gap-2">
+              <div className="flex-1 min-w-0">
                 <span className="font-medium">{item.quantity}x {item.name}</span>
                 {item.flavors.length > 0 && (
-                  <p className="text-muted-foreground text-xs mt-0.5">
+                  <p className="text-muted-foreground text-xs truncate">
                     {item.flavors.join(', ')}
                   </p>
                 )}
                 {item.accompaniments && item.accompaniments.length > 0 && (
-                  <p className="text-muted-foreground text-xs">
+                  <p className="text-muted-foreground text-xs truncate">
                     + {item.accompaniments.join(', ')}
                   </p>
                 )}
               </div>
-              <span className="text-muted-foreground">
+              <span className="text-muted-foreground flex-shrink-0">
                 R$ {(item.price * item.quantity).toFixed(2)}
               </span>
             </div>
@@ -103,17 +104,17 @@ export function OrderCard({ order, onStatusChange }: OrderCardProps) {
       </div>
 
       {/* Total */}
-      <div className="flex items-center justify-between py-3 border-t border-border">
-        <span className="font-medium">Total</span>
-        <span className="text-lg font-semibold">R$ {order.total.toFixed(2)}</span>
+      <div className="flex items-center justify-between py-2 sm:py-3 border-t border-border">
+        <span className="text-sm font-medium">Total</span>
+        <span className="text-base sm:text-lg font-semibold">R$ {order.total.toFixed(2)}</span>
       </div>
 
       {/* Botão de ação (se houver próximo status) */}
       {nextStatus && actionConfig && (
-        <div className="mt-3">
+        <div className="mt-2 sm:mt-3">
           <Button
             onClick={() => onStatusChange(order.id, nextStatus)}
-            className={cn('w-full gap-2', actionConfig.className)}
+            className={cn('w-full gap-2 text-sm', actionConfig.className)}
             size="sm"
           >
             {actionConfig.icon}
