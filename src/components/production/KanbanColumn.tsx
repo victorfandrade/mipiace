@@ -1,7 +1,6 @@
 /**
  * Coluna do quadro Kanban
  * Representa um status de pedido (novo, produção, pronto, entregue)
- * Altura otimizada para mobile
  */
 
 import { Order, OrderStatus } from '@/types/order';
@@ -26,12 +25,12 @@ export function KanbanColumn({ status, orders, onStatusChange }: KanbanColumnPro
   const config = COLUMN_CONFIG[status];
   
   return (
-    <div className="kanban-column flex flex-col h-[calc(100vh-180px)] sm:h-[calc(100vh-200px)] min-h-[400px]">
+    <div className="kanban-column flex flex-col">
       {/* Cabeçalho da coluna */}
       <div className={cn('pb-3 mb-4 border-b-2', config.borderColor)}>
         <div className="flex items-center justify-between">
-          <h3 className="font-semibold text-foreground text-sm sm:text-base">{config.title}</h3>
-          <span className="flex items-center justify-center h-6 w-6 rounded-full bg-card text-xs sm:text-sm font-medium shadow-sm">
+          <h3 className="font-semibold text-foreground">{config.title}</h3>
+          <span className="flex items-center justify-center h-6 w-6 rounded-full bg-card text-sm font-medium shadow-sm">
             {orders.length}
           </span>
         </div>
