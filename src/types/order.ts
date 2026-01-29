@@ -1,15 +1,14 @@
 /**
- * Tipos relacionados a pedidos da gelateria
- * Esses tipos são usados em todo o sistema para tipagem de dados
+ * Tipos do sistema de pedidos
  */
 
-// Status possíveis de um pedido no fluxo de produção
+// Status do pedido no fluxo: novo → produção → pronto → entregue
 export type OrderStatus = 'novo' | 'producao' | 'pronto' | 'entregue';
 
-// Status de pagamento do pedido
+// Status de pagamento
 export type PaymentStatus = 'pago' | 'pendente';
 
-// Item individual dentro de um pedido
+// Item de um pedido
 export interface OrderItem {
   id: string;
   name: string;
@@ -32,33 +31,19 @@ export interface Order {
   updatedAt: Date;
 }
 
-// ========================================
-// Tipos para Dashboard e Gráficos
-// ========================================
-
-// Dados para cards de KPI (indicadores chave)
-export interface KPIData {
-  title: string;
-  value: string | number;
-  change?: number;
-  changeLabel?: string;
-}
-
-// Dados de vendas diárias (para gráfico de linha)
+// Tipos para gráficos do Dashboard
 export interface SalesData {
   date: string;
   total: number;
   orders: number;
 }
 
-// Dados de vendas por produto (para gráfico de barras)
 export interface ProductSalesData {
   name: string;
   sales: number;
   revenue: number;
 }
 
-// Dados de vendas por horário (para gráfico de área)
 export interface HourlySalesData {
   hour: string;
   orders: number;
