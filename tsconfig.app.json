@@ -4,11 +4,11 @@
     "module": "ESNext",
     "lib": ["ES2020", "DOM"],
     "jsx": "react-jsx",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "strict": false,
     "skipLibCheck": true,
     "baseUrl": ".",
-    "paths": { "@/*": ["src/*"] }
+    "paths": { "@/*": ["./src/*"] }
   },
   "include": ["src"]
 }
