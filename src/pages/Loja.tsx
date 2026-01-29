@@ -49,7 +49,7 @@ const Loja = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
+      <Header hideOnScroll />
       
       <main className="container py-6">
         {/* Cabeçalho da página */}
