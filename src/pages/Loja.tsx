@@ -1,9 +1,9 @@
 /**
- * Página de Produção (Loja)
+ * Página de Produção
  * Quadro Kanban para gerenciar o fluxo de pedidos
  */
 
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 import { Header } from '@/components/layout/Header';
 import { KanbanColumn } from '@/components/production/KanbanColumn';
 import { Order, OrderStatus } from '@/types/order';
@@ -12,7 +12,7 @@ import { useToast } from '@/hooks/use-toast';
 import { RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-// Labels amigáveis para cada status (usado no toast)
+// Labels para cada status (usado no toast)
 const STATUS_LABELS: Record<OrderStatus, string> = {
   novo: 'Novo',
   producao: 'Em Produção',
@@ -20,7 +20,7 @@ const STATUS_LABELS: Record<OrderStatus, string> = {
   entregue: 'Entregue',
 };
 
-// Sequência de colunas no Kanban
+// Ordem das colunas no Kanban
 const KANBAN_STATUSES: OrderStatus[] = ['novo', 'producao', 'pronto', 'entregue'];
 
 const Loja = () => {
@@ -28,31 +28,22 @@ const Loja = () => {
   const { toast } = useToast();
 
   // Atualiza o status de um pedido
-  const handleStatusChange = useCallback((orderId: string, newStatus: OrderStatus) => {
-    setOrders(prevOrders =>
-      prevOrders.map(order =>
+  const handleStatusChange = (orderId: string, newStatus: OrderStatus) => {
+    setOrders(prev =>
+      prev.map(order =>
         order.id === orderId
           ? { ...order, status: newStatus, updatedAt: new Date() }
           : order
       )
     );
-
-    toast({
-      title: 'Status atualizado',
-      description: `Pedido movido para ${STATUS_LABELS[newStatus]}`,
-    });
-  }, [toast]);
-
-  // Filtra pedidos por status
-  const getOrdersByStatus = (status: OrderStatus) =>
-    orders.filter(order => order.status === status);
+    toast({ title: 'Status atualizado', description: `Pedido movido para ${STATUS_LABELS[newStatus]}` });
+  };
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
+      <Header hideOnScroll />
       
       <main className="container py-6">
-        {/* Cabeçalho da página */}
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-2xl font-bold tracking-tight">Produção</h1>
@@ -70,7 +61,7 @@ const Loja = () => {
             <KanbanColumn
               key={status}
               status={status}
-              orders={getOrdersByStatus(status)}
+              orders={orders.filter(o => o.status === status)}
               onStatusChange={handleStatusChange}
             />
           ))}
