@@ -37,16 +37,19 @@ const Loja = () => {
   }, []);
 
   const handleStatusChange = async (orderId: string, newStatus: OrderStatus) => {
-    // 1. Atualiza no Banco
+  try {
     const { error } = await supabase
       .from('pedidos')
       .update({ status_prod: newStatus })
       .eq('id', orderId);
 
-    if (error) {
-      toast({ variant: "destructive", title: "Erro", description: "Não foi possível atualizar o status." });
-      return;
-    }
+    if (error) throw error;
+
+    setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
+    toast({ title: 'Sucesso', description: `Pedido movido para ${newStatus}` });
+  } catch (err) {
+    toast({ variant: "destructive", title: "Erro na atualização", description: "Verifique a conexão com o banco." });
+  }
 
     // 2. Atualiza Localmente para UI ser instantânea
     setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: newStatus } : o));

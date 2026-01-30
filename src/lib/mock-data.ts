@@ -64,3 +64,4 @@ export function calculateKPIs() {
     changePercent: ((today.total - yesterday.total) / yesterday.total) * 100,
   };
 }
+
