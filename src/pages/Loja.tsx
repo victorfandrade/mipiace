@@ -36,7 +36,11 @@ const Loja = () => {
     return () => { supabase.removeChannel(channel); };
   }, []);
 
-  const handleStatusChange = async (orderId: string, newStatus: OrderStatus) => {
+const handleStatusChange = async (orderId: string, newStatus: OrderStatus) => {
+  // 1. Atualização Otimista (Melhora a experiência do usuário)
+  const previousOrders = [...orders];
+  setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
+
   try {
     const { error } = await supabase
       .from('pedidos')
@@ -44,17 +48,14 @@ const Loja = () => {
       .eq('id', orderId);
 
     if (error) throw error;
-
-    setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
+    
     toast({ title: 'Sucesso', description: `Pedido movido para ${newStatus}` });
   } catch (err) {
-    toast({ variant: "destructive", title: "Erro na atualização", description: "Verifique a conexão com o banco." });
+    // 2. Reverte se der erro no banco
+    setOrders(previousOrders);
+    toast({ variant: "destructive", title: "Erro na atualização", description: "Verifique sua conexão." });
   }
-
-    // 2. Atualiza Localmente para UI ser instantânea
-    setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
-    toast({ title: 'Sucesso', description: `Pedido movido para ${newStatus}` });
-  };
+};
 
   return (
     <div className="min-h-screen bg-background">
