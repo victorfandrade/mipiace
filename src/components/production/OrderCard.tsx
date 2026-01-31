@@ -1,6 +1,6 @@
 /**
  * Card de pedido no Kanban
- * Exibe detalhes do pedido e botão para avançar status
+ * Exibe detalhes e botão para avançar status
  */
 
 import { Order, OrderStatus } from '@/types/order';
@@ -9,21 +9,13 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Clock, ChefHat, Check, Truck } from 'lucide-react';
 
-interface OrderCardProps {
+interface Props {
   order: Order;
   onStatusChange: (orderId: string, newStatus: OrderStatus) => void;
 }
 
-// Formata hora no padrão brasileiro
-const formatTime = (date: Date) => 
-  date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-
-// Calcula minutos desde a criação
-const getMinutesAgo = (date: Date) => 
-  Math.floor((Date.now() - date.getTime()) / 60000);
-
 // Próximo status no fluxo
-const NEXT_STATUS: Record<OrderStatus, OrderStatus | null> = {
+const NEXT: Record<OrderStatus, OrderStatus | null> = {
   novo: 'producao',
   producao: 'pronto',
   pronto: 'entregue',
@@ -31,17 +23,21 @@ const NEXT_STATUS: Record<OrderStatus, OrderStatus | null> = {
 };
 
 // Config dos botões de ação
-const ACTION_CONFIG = {
+const ACTIONS: Record<string, { label: string; icon: typeof ChefHat; className: string }> = {
   producao: { label: 'Iniciar', icon: ChefHat, className: 'action-btn-warning' },
   pronto: { label: 'Concluir', icon: Check, className: 'action-btn-success' },
   entregue: { label: 'Entregar', icon: Truck, className: 'action-btn-secondary' },
 };
 
-export function OrderCard({ order, onStatusChange }: OrderCardProps) {
+// Helpers
+const formatTime = (date: Date) => date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+const getMinutesAgo = (date: Date) => Math.floor((Date.now() - date.getTime()) / 60000);
+
+export function OrderCard({ order, onStatusChange }: Props) {
   const minutesAgo = getMinutesAgo(order.createdAt);
   const isUrgent = minutesAgo > 15 && order.status !== 'entregue';
-  const nextStatus = NEXT_STATUS[order.status];
-  const action = nextStatus ? ACTION_CONFIG[nextStatus] : null;
+  const nextStatus = NEXT[order.status];
+  const action = nextStatus ? ACTIONS[nextStatus] : null;
 
   return (
     <div className={cn(
@@ -69,7 +65,7 @@ export function OrderCard({ order, onStatusChange }: OrderCardProps) {
 
       {/* Itens */}
       <div className="space-y-2 mb-4">
-        {order.items.map((item) => (
+        {order.items.map(item => (
           <div key={item.id} className="text-sm">
             <div className="flex items-start justify-between">
               <div>
@@ -77,7 +73,7 @@ export function OrderCard({ order, onStatusChange }: OrderCardProps) {
                 {item.flavors.length > 0 && (
                   <p className="text-muted-foreground text-xs mt-0.5">{item.flavors.join(', ')}</p>
                 )}
-                {item.accompaniments?.length > 0 && (
+                {item.accompaniments && item.accompaniments.length > 0 && (
                   <p className="text-muted-foreground text-xs">+ {item.accompaniments.join(', ')}</p>
                 )}
               </div>

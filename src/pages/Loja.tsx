@@ -1,3 +1,8 @@
+/**
+ * Página de Produção (Kanban)
+ * Exibe pedidos organizados por status
+ */
+
 import { useState, useEffect } from 'react';
 import { Header } from '@/components/layout/Header';
 import { KanbanColumn } from '@/components/production/KanbanColumn';
@@ -8,13 +13,14 @@ import { useToast } from '@/hooks/use-toast';
 import { RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-const KANBAN_STATUSES: OrderStatus[] = ['novo', 'producao', 'pronto', 'entregue'];
+const STATUSES: OrderStatus[] = ['novo', 'producao', 'pronto', 'entregue'];
 
-const Loja = () => {
+export default function Loja() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
+  // Carrega pedidos do banco
   const fetchOrders = async () => {
     setLoading(true);
     const data = await getRealOrders();
@@ -25,41 +31,38 @@ const Loja = () => {
   useEffect(() => {
     fetchOrders();
 
-    // REALTIME: Escuta novas inserções e atualizações no banco
+    // Escuta mudanças no banco em tempo real
     const channel = supabase
-      .channel('schema-db-changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'pedidos' }, () => {
-        fetchOrders(); // Recarrega ao detectar mudança
-      })
+      .channel('pedidos-realtime')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'pedidos' }, fetchOrders)
       .subscribe();
 
     return () => { supabase.removeChannel(channel); };
   }, []);
 
-const handleStatusChange = async (orderId: string, newStatus: OrderStatus) => {
-  // 1. Atualização Otimista (Melhora a experiência do usuário)
-  const previousOrders = [...orders];
-  setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
+  // Muda status do pedido com atualização otimista
+  const handleStatusChange = async (orderId: string, newStatus: OrderStatus) => {
+    const previous = [...orders];
+    setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
 
-  try {
-    const { error } = await supabase
-      .from('pedidos')
-      .update({ status_prod: newStatus })
-      .eq('id', orderId);
+    try {
+      const { error } = await supabase
+        .from('pedidos')
+        .update({ status_prod: newStatus })
+        .eq('id', orderId);
 
-    if (error) throw error;
-    
-    toast({ title: 'Sucesso', description: `Pedido movido para ${newStatus}` });
-  } catch (err) {
-    // 2. Reverte se der erro no banco
-    setOrders(previousOrders);
-    toast({ variant: "destructive", title: "Erro na atualização", description: "Verifique sua conexão." });
-  }
-};
+      if (error) throw error;
+      toast({ title: 'Sucesso', description: `Pedido movido para ${newStatus}` });
+    } catch {
+      setOrders(previous); // Reverte se der erro
+      toast({ variant: "destructive", title: "Erro", description: "Verifique sua conexão." });
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background">
       <Header hideOnScroll />
+      
       <main className="container py-6">
         <div className="flex items-center justify-between mb-6">
           <div>
@@ -73,7 +76,7 @@ const handleStatusChange = async (orderId: string, newStatus: OrderStatus) => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
-          {KANBAN_STATUSES.map(status => (
+          {STATUSES.map(status => (
             <KanbanColumn
               key={status}
               status={status}
@@ -85,6 +88,4 @@ const handleStatusChange = async (orderId: string, newStatus: OrderStatus) => {
       </main>
     </div>
   );
-};
-
-export default Loja;
+}

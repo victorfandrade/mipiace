@@ -1,6 +1,6 @@
 /**
- * Proteção por senha simples para áreas restritas
- * NOTA: Para produção, use autenticação real via Lovable Cloud
+ * Proteção por senha simples
+ * NOTA: Para produção, usar autenticação real via Lovable Cloud
  */
 
 import { useState } from 'react';
@@ -13,14 +13,8 @@ import logoMiPiace from '@/assets/logo-mipiace.png';
 const PASSWORD = 'gabriel0419';
 const STORAGE_KEY = 'mipiace_dashboard_access';
 
-interface PasswordGateProps {
-  children: React.ReactNode;
-}
-
-export function PasswordGate({ children }: PasswordGateProps) {
-  const [isAuthenticated, setIsAuthenticated] = useState(() => 
-    sessionStorage.getItem(STORAGE_KEY) === 'true'
-  );
+export function PasswordGate({ children }: { children: React.ReactNode }) {
+  const [authenticated, setAuthenticated] = useState(() => sessionStorage.getItem(STORAGE_KEY) === 'true');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
@@ -29,25 +23,23 @@ export function PasswordGate({ children }: PasswordGateProps) {
     e.preventDefault();
     if (password === PASSWORD) {
       sessionStorage.setItem(STORAGE_KEY, 'true');
-      setIsAuthenticated(true);
+      setAuthenticated(true);
     } else {
       setError('Senha incorreta');
       setPassword('');
     }
   };
 
-  if (isAuthenticated) return <>{children}</>;
+  if (authenticated) return <>{children}</>;
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="w-full max-w-sm">
         <div className="bg-card rounded-2xl border border-border p-8 shadow-sm">
-          {/* Logo */}
           <div className="flex justify-center mb-6">
             <img src={logoMiPiace} alt="Mi Piace" className="h-16" />
           </div>
 
-          {/* Título */}
           <div className="text-center mb-6">
             <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 mb-4">
               <Lock className="h-6 w-6 text-primary" />
@@ -56,7 +48,6 @@ export function PasswordGate({ children }: PasswordGateProps) {
             <p className="text-sm text-muted-foreground mt-1">Digite a senha para acessar</p>
           </div>
 
-          {/* Formulário */}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="password">Senha</Label>
@@ -65,7 +56,7 @@ export function PasswordGate({ children }: PasswordGateProps) {
                   id="password"
                   type={showPassword ? 'text' : 'password'}
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={e => setPassword(e.target.value)}
                   placeholder="Digite a senha"
                   className="pr-10"
                   autoFocus
@@ -85,9 +76,7 @@ export function PasswordGate({ children }: PasswordGateProps) {
             <Button type="submit" className="w-full">Acessar</Button>
           </form>
         </div>
-        <p className="text-xs text-muted-foreground text-center mt-4">
-          Acesso restrito a funcionários
-        </p>
+        <p className="text-xs text-muted-foreground text-center mt-4">Acesso restrito a funcionários</p>
       </div>
     </div>
   );

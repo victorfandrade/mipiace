@@ -1,33 +1,34 @@
 /**
- * Coluna do quadro Kanban
+ * Coluna do Kanban
+ * Agrupa pedidos por status
  */
 
 import { Order, OrderStatus } from '@/types/order';
 import { OrderCard } from './OrderCard';
 import { cn } from '@/lib/utils';
 
-interface KanbanColumnProps {
+interface Props {
   status: OrderStatus;
   orders: Order[];
   onStatusChange: (orderId: string, newStatus: OrderStatus) => void;
 }
 
-const COLUMN_CONFIG: Record<OrderStatus, { title: string; borderColor: string }> = {
-  novo: { title: 'Novos', borderColor: 'border-b-status-new' },
-  producao: { title: 'Em Produção', borderColor: 'border-b-status-production' },
-  pronto: { title: 'Prontos', borderColor: 'border-b-status-ready' },
-  entregue: { title: 'Entregues', borderColor: 'border-b-status-delivered' },
+const CONFIG: Record<OrderStatus, { title: string; border: string }> = {
+  novo: { title: 'Novos', border: 'border-b-status-new' },
+  producao: { title: 'Em Produção', border: 'border-b-status-production' },
+  pronto: { title: 'Prontos', border: 'border-b-status-ready' },
+  entregue: { title: 'Entregues', border: 'border-b-status-delivered' },
 };
 
-export function KanbanColumn({ status, orders, onStatusChange }: KanbanColumnProps) {
-  const config = COLUMN_CONFIG[status];
-  
+export function KanbanColumn({ status, orders, onStatusChange }: Props) {
+  const { title, border } = CONFIG[status];
+
   return (
     <div className="kanban-column flex flex-col">
       {/* Cabeçalho */}
-      <div className={cn('pb-3 mb-4 border-b-2', config.borderColor)}>
+      <div className={cn('pb-3 mb-4 border-b-2', border)}>
         <div className="flex items-center justify-between">
-          <h3 className="font-semibold">{config.title}</h3>
+          <h3 className="font-semibold">{title}</h3>
           <span className="flex items-center justify-center h-6 w-6 rounded-full bg-card text-sm font-medium shadow-sm">
             {orders.length}
           </span>
@@ -41,7 +42,7 @@ export function KanbanColumn({ status, orders, onStatusChange }: KanbanColumnPro
             Nenhum pedido
           </div>
         ) : (
-          orders.map((order) => (
+          orders.map(order => (
             <OrderCard key={order.id} order={order} onStatusChange={onStatusChange} />
           ))
         )}

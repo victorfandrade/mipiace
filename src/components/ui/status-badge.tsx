@@ -5,7 +5,7 @@
 import { OrderStatus, PaymentStatus } from '@/types/order';
 import { cn } from '@/lib/utils';
 
-const STATUS_CONFIG: Record<OrderStatus, { label: string; className: string }> = {
+const STATUS: Record<OrderStatus, { label: string; className: string }> = {
   novo: { label: 'Novo', className: 'status-new' },
   producao: { label: 'Produção', className: 'status-production' },
   pronto: { label: 'Pronto', className: 'status-ready' },
@@ -13,10 +13,10 @@ const STATUS_CONFIG: Record<OrderStatus, { label: string; className: string }> =
 };
 
 export function StatusBadge({ status, className }: { status: OrderStatus; className?: string }) {
-  const config = STATUS_CONFIG[status];
+  const { label, className: statusClass } = STATUS[status];
   return (
-    <span className={cn('inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium', config.className, className)}>
-      {config.label}
+    <span className={cn('inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium', statusClass, className)}>
+      {label}
     </span>
   );
 }
