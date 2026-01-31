@@ -31,7 +31,7 @@ export function RecentOrders({ orders }: { orders: Order[] }) {
                 </TableCell>
               </TableRow>
             ) : (
-              orders.map((order) => (
+              orders.map(order => (
                 <TableRow key={order.id}>
                   <TableCell className="font-medium">#{order.orderNumber}</TableCell>
                   <TableCell>{order.customerName || '-'}</TableCell>

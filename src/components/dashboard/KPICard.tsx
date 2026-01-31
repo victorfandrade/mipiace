@@ -5,7 +5,7 @@
 import { cn } from '@/lib/utils';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 
-interface KPICardProps {
+interface Props {
   title: string;
   value: string | number;
   change?: number;
@@ -16,9 +16,7 @@ interface KPICardProps {
   valueSuffix?: string;
 }
 
-export function KPICard({
-  title, value, change, changeLabel, icon, className, valuePrefix = '', valueSuffix = ''
-}: KPICardProps) {
+export function KPICard({ title, value, change, changeLabel, icon, className, valuePrefix = '', valueSuffix = '' }: Props) {
   const isPositive = change && change > 0;
   const isNegative = change && change < 0;
 

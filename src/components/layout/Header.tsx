@@ -1,7 +1,6 @@
 /**
- * Componente Header
- * Navegação principal com logo e links
- * Opção de esconder ao rolar a página
+ * Header da aplicação
+ * Navegação principal com opção de esconder ao rolar
  */
 
 import { useState, useEffect } from 'react';
@@ -11,47 +10,39 @@ import { LayoutDashboard, Store, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import logoMiPiace from '@/assets/logo-mipiace.png';
 
-const NAV_ITEMS = [
+const NAV = [
   { path: '/', label: 'Produção', icon: Store },
   { path: '/admin', label: 'Dashboard', icon: LayoutDashboard },
 ];
 
-interface HeaderProps {
-  hideOnScroll?: boolean;
-}
-
-export function Header({ hideOnScroll = false }: HeaderProps) {
+export function Header({ hideOnScroll = false }: { hideOnScroll?: boolean }) {
   const location = useLocation();
-  const [isVisible, setIsVisible] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
+  const [visible, setVisible] = useState(true);
+  const [lastY, setLastY] = useState(0);
 
   useEffect(() => {
     if (!hideOnScroll) return;
 
-    const handleScroll = () => {
-      const currentY = window.scrollY;
-      setIsVisible(currentY < lastScrollY || currentY < 10);
-      setLastScrollY(currentY);
+    const onScroll = () => {
+      const y = window.scrollY;
+      setVisible(y < lastY || y < 10);
+      setLastY(y);
     };
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [hideOnScroll, lastScrollY]);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [hideOnScroll, lastY]);
 
   return (
     <header className={cn(
       'sticky top-0 z-50 w-full border-b border-border bg-card/80 backdrop-blur-sm transition-transform duration-300',
-      !isVisible && '-translate-y-full'
+      !visible && '-translate-y-full'
     )}>
       <div className="container flex h-16 items-center justify-between">
-        {/* Logo */}
-        <Link to="/">
-          <img src={logoMiPiace} alt="Mi Piace" className="h-10" />
-        </Link>
+        <Link to="/"><img src={logoMiPiace} alt="Mi Piace" className="h-10" /></Link>
 
-        {/* Navegação */}
         <nav className="flex items-center gap-1">
-          {NAV_ITEMS.map(({ path, label, icon: Icon }) => (
+          {NAV.map(({ path, label, icon: Icon }) => (
             <Link
               key={path}
               to={path}
@@ -68,7 +59,6 @@ export function Header({ hideOnScroll = false }: HeaderProps) {
           ))}
         </nav>
 
-        {/* Logout */}
         <Button variant="ghost" size="icon" className="text-muted-foreground">
           <LogOut className="h-4 w-4" />
         </Button>
