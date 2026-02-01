@@ -41,61 +41,65 @@ export function OrderCard({ order, onStatusChange }: Props) {
 
   return (
     <div className={cn(
-      'order-card',
-      order.status === 'novo' && 'animate-pulse-subtle border-status-new/30',
-      isUrgent && 'border-destructive/50'
+      'order-card group',
+      order.status === 'novo' && 'animate-pulse-subtle ring-2 ring-status-new/20',
+      isUrgent && 'ring-2 ring-destructive/30'
     )}>
       {/* Cabeçalho */}
       <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center gap-2">
-          <span className="text-lg font-semibold">#{order.orderNumber}</span>
+        <div className="flex items-center gap-2.5">
+          <span className="text-lg font-bold text-foreground">#{order.orderNumber}</span>
           <PaymentBadge status={order.paymentStatus} />
         </div>
-        <div className="flex items-center gap-1 text-sm text-muted-foreground">
-          <Clock className="h-3.5 w-3.5" />
-          <span>{formatTime(order.createdAt)}</span>
-          <span className="text-xs">({minutesAgo}min)</span>
+        <div className="flex items-center gap-1.5 text-xs text-muted-foreground bg-secondary/60 px-2 py-1 rounded-lg">
+          <Clock className="h-3 w-3" />
+          <span className="font-medium">{formatTime(order.createdAt)}</span>
+          <span className="text-muted-foreground/70">• {minutesAgo}min</span>
         </div>
       </div>
 
       {/* Cliente */}
       {order.customerName && (
-        <p className="text-sm text-muted-foreground mb-3">{order.customerName}</p>
+        <p className="text-sm font-medium text-muted-foreground mb-3 flex items-center gap-2">
+          <span className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold">
+            {order.customerName.charAt(0).toUpperCase()}
+          </span>
+          {order.customerName}
+        </p>
       )}
 
       {/* Itens */}
-      <div className="space-y-2 mb-4">
+      <div className="space-y-2.5 mb-4 bg-secondary/30 rounded-lg p-3 -mx-1">
         {order.items.map(item => (
           <div key={item.id} className="text-sm">
-            <div className="flex items-start justify-between">
-              <div>
-                <span className="font-medium">{item.quantity}x {item.name}</span>
+            <div className="flex items-start justify-between gap-2">
+              <div className="flex-1">
+                <span className="font-semibold text-foreground">{item.quantity}x {item.name}</span>
                 {item.flavors.length > 0 && (
-                  <p className="text-muted-foreground text-xs mt-0.5">{item.flavors.join(', ')}</p>
+                  <p className="text-muted-foreground text-xs mt-0.5 italic">{item.flavors.join(', ')}</p>
                 )}
                 {item.accompaniments && item.accompaniments.length > 0 && (
-                  <p className="text-muted-foreground text-xs">+ {item.accompaniments.join(', ')}</p>
+                  <p className="text-muted-foreground/80 text-xs">+ {item.accompaniments.join(', ')}</p>
                 )}
               </div>
-              <span className="text-muted-foreground">R$ {(item.price * item.quantity).toFixed(2)}</span>
+              <span className="text-sm font-medium text-muted-foreground">R$ {(item.price * item.quantity).toFixed(2)}</span>
             </div>
           </div>
         ))}
       </div>
 
       {/* Total */}
-      <div className="flex items-center justify-between py-3 border-t border-border">
-        <span className="font-medium">Total</span>
-        <span className="text-lg font-semibold">R$ {order.total.toFixed(2)}</span>
+      <div className="flex items-center justify-between py-3 border-t border-border/50">
+        <span className="font-medium text-muted-foreground">Total</span>
+        <span className="text-xl font-bold text-primary">R$ {order.total.toFixed(2)}</span>
       </div>
 
       {/* Botão de ação */}
       {nextStatus && action && (
-        <div className="mt-3">
+        <div className="mt-4">
           <Button
             onClick={() => onStatusChange(order.id, nextStatus)}
-            className={cn('w-full gap-2', action.className)}
-            size="sm"
+            className={cn('w-full gap-2 h-11', action.className)}
           >
             <action.icon className="h-4 w-4" />
             {action.label}
