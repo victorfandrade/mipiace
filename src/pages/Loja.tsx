@@ -63,19 +63,29 @@ export default function Loja() {
     <div className="min-h-screen bg-background">
       <Header hideOnScroll />
       
-      <main className="container py-6">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight">Produção</h1>
-            <p className="text-muted-foreground">Monitorando em tempo real</p>
+      <main className="container py-8">
+        {/* Header da página */}
+        <div className="flex items-center justify-between mb-8">
+          <div className="space-y-1">
+            <h1 className="text-3xl font-bold tracking-tight text-foreground">Produção</h1>
+            <p className="text-muted-foreground flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-status-ready animate-pulse" />
+              Monitorando em tempo real
+            </p>
           </div>
-          <Button variant="outline" size="sm" onClick={fetchOrders} disabled={loading} className="gap-2">
+          <Button 
+            variant="outline" 
+            onClick={fetchOrders} 
+            disabled={loading} 
+            className="gap-2 rounded-xl shadow-sm hover:shadow-md transition-all"
+          >
             <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
             Atualizar
           </Button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+        {/* Kanban */}
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
           {STATUSES.map(status => (
             <KanbanColumn
               key={status}
