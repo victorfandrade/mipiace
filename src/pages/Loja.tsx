@@ -1,96 +1,76 @@
 /**
- * Página de Produção (Kanban)
- * Exibe pedidos organizados por status
+ * Página de Produção (Loja)
+ * Quadro Kanban para gerenciar o fluxo de pedidos
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import { Header } from '@/components/layout/Header';
 import { KanbanColumn } from '@/components/production/KanbanColumn';
 import { Order, OrderStatus } from '@/types/order';
-import { getRealOrders } from '@/lib/mock-data';
-import { supabase } from '@/lib/supabase';
+import { mockOrders } from '@/lib/mock-data';
 import { useToast } from '@/hooks/use-toast';
 import { RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-const STATUSES: OrderStatus[] = ['novo', 'producao', 'pronto', 'entregue'];
+// Labels amigáveis para cada status (usado no toast)
+const STATUS_LABELS: Record<OrderStatus, string> = {
+  novo: 'Novo',
+  producao: 'Em Produção',
+  pronto: 'Pronto',
+  entregue: 'Entregue',
+};
 
-export default function Loja() {
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [loading, setLoading] = useState(true);
+// Sequência de colunas no Kanban
+const KANBAN_STATUSES: OrderStatus[] = ['novo', 'producao', 'pronto', 'entregue'];
+
+const Loja = () => {
+  const [orders, setOrders] = useState<Order[]>(mockOrders);
   const { toast } = useToast();
 
-  // Carrega pedidos do banco
-  const fetchOrders = async () => {
-    setLoading(true);
-    const data = await getRealOrders();
-    setOrders(data);
-    setLoading(false);
-  };
+  // Atualiza o status de um pedido
+  const handleStatusChange = useCallback((orderId: string, newStatus: OrderStatus) => {
+    setOrders(prevOrders =>
+      prevOrders.map(order =>
+        order.id === orderId
+          ? { ...order, status: newStatus, updatedAt: new Date() }
+          : order
+      )
+    );
 
-  useEffect(() => {
-    fetchOrders();
+    toast({
+      title: 'Status atualizado',
+      description: `Pedido movido para ${STATUS_LABELS[newStatus]}`,
+    });
+  }, [toast]);
 
-    // Escuta mudanças no banco em tempo real
-    const channel = supabase
-      .channel('pedidos-realtime')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'pedidos' }, fetchOrders)
-      .subscribe();
-
-    return () => { supabase.removeChannel(channel); };
-  }, []);
-
-  // Muda status do pedido com atualização otimista
-  const handleStatusChange = async (orderId: string, newStatus: OrderStatus) => {
-    const previous = [...orders];
-    setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
-
-    try {
-      const { error } = await supabase
-        .from('pedidos')
-        .update({ status_prod: newStatus })
-        .eq('id', orderId);
-
-      if (error) throw error;
-      toast({ title: 'Sucesso', description: `Pedido movido para ${newStatus}` });
-    } catch {
-      setOrders(previous); // Reverte se der erro
-      toast({ variant: "destructive", title: "Erro", description: "Verifique sua conexão." });
-    }
-  };
+  // Filtra pedidos por status
+  const getOrdersByStatus = (status: OrderStatus) =>
+    orders.filter(order => order.status === status);
 
   return (
     <div className="min-h-screen bg-background">
-      <Header hideOnScroll />
+      <Header />
       
-      <main className="container py-8">
-        {/* Header da página */}
-        <div className="flex items-center justify-between mb-8">
-          <div className="space-y-1">
-            <h1 className="text-3xl font-bold tracking-tight text-foreground">Produção</h1>
-            <p className="text-muted-foreground flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-status-ready animate-pulse" />
-              Monitorando em tempo real
-            </p>
+      <main className="container py-6">
+        {/* Cabeçalho da página */}
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight">Produção</h1>
+            <p className="text-muted-foreground">Gerencie o fluxo de pedidos</p>
           </div>
-          <Button 
-            variant="outline" 
-            onClick={fetchOrders} 
-            disabled={loading} 
-            className="gap-2 rounded-xl shadow-sm hover:shadow-md transition-all"
-          >
-            <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+          <Button variant="outline" size="sm" className="gap-2">
+            <RefreshCw className="h-4 w-4" />
             Atualizar
           </Button>
         </div>
 
-        {/* Kanban */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
-          {STATUSES.map(status => (
+        {/* Quadro Kanban */}
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+          {KANBAN_STATUSES.map(status => (
             <KanbanColumn
               key={status}
               status={status}
-              orders={orders.filter(o => o.status === status)}
+              orders={getOrdersByStatus(status)}
               onStatusChange={handleStatusChange}
             />
           ))}
@@ -98,4 +78,6 @@ export default function Loja() {
       </main>
     </div>
   );
-}
+};
+
+export default Loja;

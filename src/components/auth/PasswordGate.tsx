@@ -1,6 +1,9 @@
 /**
- * Proteção por senha simples
- * NOTA: Para produção, usar autenticação real via Lovable Cloud
+ * Componente de bloqueio por senha
+ * Exibe um formulário de senha antes de liberar o conteúdo protegido
+ * 
+ * NOTA: Esta é uma proteção simples, não substitui autenticação real.
+ * Para segurança de produção, use Lovable Cloud com autenticação.
  */
 
 import { useState } from 'react';
@@ -10,44 +13,70 @@ import { Label } from '@/components/ui/label';
 import { Lock, Eye, EyeOff } from 'lucide-react';
 import logoMiPiace from '@/assets/logo-mipiace.png';
 
-const PASSWORD = 'gabriel0419';
+// Senha de acesso (em produção, use autenticação real via Lovable Cloud)
+const ACCESS_PASSWORD = 'gabriel0419';
 const STORAGE_KEY = 'mipiace_dashboard_access';
 
-export function PasswordGate({ children }: { children: React.ReactNode }) {
-  const [authenticated, setAuthenticated] = useState(() => sessionStorage.getItem(STORAGE_KEY) === 'true');
+interface PasswordGateProps {
+  children: React.ReactNode;
+}
+
+export function PasswordGate({ children }: PasswordGateProps) {
+  // Verifica se já está autenticado na sessão atual
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    return sessionStorage.getItem(STORAGE_KEY) === 'true';
+  });
+  
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (password === PASSWORD) {
+    
+    if (password === ACCESS_PASSWORD) {
       sessionStorage.setItem(STORAGE_KEY, 'true');
-      setAuthenticated(true);
+      setIsAuthenticated(true);
+      setError('');
     } else {
       setError('Senha incorreta');
       setPassword('');
     }
   };
 
-  if (authenticated) return <>{children}</>;
+  // Se já está autenticado, mostra o conteúdo
+  if (isAuthenticated) {
+    return <>{children}</>;
+  }
 
+  // Tela de login
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="w-full max-w-sm">
-        <div className="bg-card rounded-2xl border border-border p-8 shadow-sm">
+        <div className="bg-card rounded-2xl border border-border p-8 shadow-soft">
+          {/* Logo */}
           <div className="flex justify-center mb-6">
-            <img src={logoMiPiace} alt="Mi Piace" className="h-16" />
+            <img 
+              src={logoMiPiace} 
+              alt="Mi Piace Gelato" 
+              className="h-16 object-contain" 
+            />
           </div>
 
+          {/* Título */}
           <div className="text-center mb-6">
             <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 mb-4">
               <Lock className="h-6 w-6 text-primary" />
             </div>
-            <h1 className="text-xl font-semibold">Área Restrita</h1>
-            <p className="text-sm text-muted-foreground mt-1">Digite a senha para acessar</p>
+            <h1 className="text-xl font-semibold text-foreground">
+              Área Restrita
+            </h1>
+            <p className="text-sm text-muted-foreground mt-1">
+              Digite a senha para acessar o dashboard
+            </p>
           </div>
 
+          {/* Formulário */}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="password">Senha</Label>
@@ -56,7 +85,7 @@ export function PasswordGate({ children }: { children: React.ReactNode }) {
                   id="password"
                   type={showPassword ? 'text' : 'password'}
                   value={password}
-                  onChange={e => setPassword(e.target.value)}
+                  onChange={(e) => setPassword(e.target.value)}
                   placeholder="Digite a senha"
                   className="pr-10"
                   autoFocus
@@ -64,19 +93,34 @@ export function PasswordGate({ children }: { children: React.ReactNode }) {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  {showPassword ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
                 </button>
               </div>
             </div>
 
-            {error && <p className="text-sm text-destructive text-center">{error}</p>}
+            {/* Mensagem de erro */}
+            {error && (
+              <p className="text-sm text-destructive text-center">
+                {error}
+              </p>
+            )}
 
-            <Button type="submit" className="w-full">Acessar</Button>
+            <Button type="submit" className="w-full">
+              Acessar Dashboard
+            </Button>
           </form>
         </div>
-        <p className="text-xs text-muted-foreground text-center mt-4">Acesso restrito a funcionários</p>
+
+        {/* Nota de segurança */}
+        <p className="text-xs text-muted-foreground text-center mt-4">
+          Acesso restrito a funcionários autorizados
+        </p>
       </div>
     </div>
   );

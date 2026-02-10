@@ -1,12 +1,24 @@
 /**
  * Tabela de pedidos recentes
+ * Exibe uma lista compacta dos últimos pedidos
  */
 
 import { Order } from '@/types/order';
 import { StatusBadge, PaymentBadge } from '@/components/ui/status-badge';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 
-export function RecentOrders({ orders }: { orders: Order[] }) {
+interface RecentOrdersProps {
+  orders: Order[];
+}
+
+export function RecentOrders({ orders }: RecentOrdersProps) {
   return (
     <div className="kpi-card">
       <h3 className="font-semibold mb-4">Pedidos Recentes</h3>
@@ -31,16 +43,22 @@ export function RecentOrders({ orders }: { orders: Order[] }) {
                 </TableCell>
               </TableRow>
             ) : (
-              orders.map(order => (
-                <TableRow key={order.id}>
+              orders.map((order) => (
+                <TableRow key={order.id} className="animate-fade-in">
                   <TableCell className="font-medium">#{order.orderNumber}</TableCell>
                   <TableCell>{order.customerName || '-'}</TableCell>
                   <TableCell className="max-w-[200px] truncate">
                     {order.items.map(i => `${i.quantity}x ${i.name}`).join(', ')}
                   </TableCell>
-                  <TableCell className="text-right font-medium">R$ {order.total.toFixed(2)}</TableCell>
-                  <TableCell><StatusBadge status={order.status} /></TableCell>
-                  <TableCell><PaymentBadge status={order.paymentStatus} /></TableCell>
+                  <TableCell className="text-right font-medium">
+                    R$ {order.total.toFixed(2)}
+                  </TableCell>
+                  <TableCell>
+                    <StatusBadge status={order.status} />
+                  </TableCell>
+                  <TableCell>
+                    <PaymentBadge status={order.paymentStatus} />
+                  </TableCell>
                   <TableCell className="text-muted-foreground">
                     {order.createdAt.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
                   </TableCell>
